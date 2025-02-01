@@ -1,0 +1,34 @@
+- name: Install ufw
+  apt:
+    name: ufw
+    state: present
+    update_cache: true
+
+- name: Check ufw status
+  command: ufw status
+  register: ufw_status
+
+- name: Add default firewall rules
+  command: "{{ item }}"
+  loop:
+    - ufw default deny incoming
+    - ufw default allow outgoing
+    - ufw allow OpenSSH 
+    - ufw allow 80 
+    - ufw allow 8080 
+    - ufw allow 443 
+  when: '"inactive" in ufw_status.stdout'
+
+- name: Check ufw new added rules
+  command: ufw show added
+  register: ufw_added
+  when: '"inactive" in ufw_status.stdout'
+
+- name: Enable ufw
+  expect:
+    command: ufw enable
+    responses:
+      'Command may disrupt existing ssh connections': 'y'
+  when:
+  - '"inactive" in ufw_status.stdout'
+  - '"allow OpenSSH" in ufw_added.stdout'

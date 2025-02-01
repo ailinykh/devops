@@ -1,0 +1,10 @@
+---
+- hosts: hosts
+  user: root
+  vars:
+    username: user
+  roles:
+    - user
+    - firewall
+    - docker
+    - ssh # disables root login

@@ -1,0 +1,27 @@
+- name: Install fail2ban
+  apt:
+    name: fail2ban
+    state: present
+    update_cache: true
+
+- name: Add networks to fail2ban whitelist
+  lineinfile:
+    path: /etc/fail2ban/jail.conf
+    regexp: "^#?ignoreip"
+    line: "ignoreip = 127.0.0.1/8 192.168.0.0/8 178.140.53.0/24 62.60.216.0/24"
+    backup: yes
+
+- name: Run fail2ban
+  systemd:
+    name: fail2ban
+    enabled: true
+    state: started
+
+- name: Create sshd config
+  copy:
+    dest: /etc/ssh/sshd_config.d/50-cloud-init.conf
+    content: |
+      PasswordAuthentication no
+      PermitRootLogin no
+      # UsePAM no
+  notify: restart sshd

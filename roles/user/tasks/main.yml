@@ -1,0 +1,24 @@
+- name: Create user
+  user:
+    name: "{{ username }}"
+    groups: sudo
+    append: true
+    shell: /bin/bash
+
+# curl https://github.com/"{{ username }}".keys | tee -a ~/.ssh/authorized_keys
+- name: Add user public key
+  authorized_key: 
+    user: "{{ username }}" 
+    key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+    state: present
+
+- name: Copy .bashrc file
+  copy:
+    src: .bashrc
+    dest: "/home/{{ username }}/.bashrc"
+
+- name: Disable password for sudo
+  copy:
+    dest: "/etc/sudoers.d/{{ username }}"
+    content: |
+      {{ username }} ALL=(ALL) NOPASSWD: ALL
