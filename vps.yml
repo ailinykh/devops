@@ -7,4 +7,5 @@
     - user
     - firewall
     - docker
+    - software
     - ssh # disables root login
