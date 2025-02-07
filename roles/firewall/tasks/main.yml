@@ -13,10 +13,11 @@
   loop:
     - ufw default deny incoming
     - ufw default allow outgoing
-    - ufw allow OpenSSH 
-    - ufw allow 80 
-    - ufw allow 8080 
-    - ufw allow 443 
+    - ufw allow OpenSSH
+    - ufw allow 2222
+    - ufw allow 80
+    - ufw allow 8080
+    - ufw allow 443
   when: '"inactive" in ufw_status.stdout'
 
 - name: Check ufw new added rules
