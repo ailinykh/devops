@@ -1,0 +1,41 @@
+- name: Update and upgrade all packages to the latest version
+  apt:
+    update_cache: true
+    upgrade: dist
+    cache_valid_time: 3600
+
+- name: Add amnezia repository into sources list
+  apt_repository:
+    repo: ppa:amnezia/ppa
+    state: present
+
+- name: Install required packages
+  apt:
+    pkg:
+      - software-properties-common
+      - python3-launchpadlib
+      - gnupg2
+      - linux-headers-{{ ansible_facts['kernel'] }}
+      - amneziawg
+    state: present
+    update_cache: true
+
+- name: Generate private key
+  command: awg genkey
+  register: awg_private_key
+
+- name: Save private key to file
+  copy:
+    content: "{{ awg_private_key.stdout }}"
+    dest: /etc/amnezia/amneziawg/private.key
+    mode: '0600'
+
+- name: Generate public key from private key
+  shell: echo "{{ awg_private_key.stdout }}" | awg pubkey
+  register: awg_public_key
+
+- name: Save public key to file
+  copy:
+    content: "{{ awg_public_key.stdout }}"
+    dest: /etc/amnezia/amneziawg/public.key
+    mode: '0644'
