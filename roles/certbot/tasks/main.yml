@@ -1,0 +1,15 @@
+- name: Update and upgrade all packages to the latest version
+  apt:
+    update_cache: true
+    upgrade: dist
+    cache_valid_time: 3600
+
+- name: Install snapd
+  apt:
+    pkg:
+      - snapd
+
+- name: Install certbot
+  community.general.snap:
+    name: certbot
+    classic: yes
