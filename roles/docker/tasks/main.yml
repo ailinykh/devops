@@ -61,7 +61,7 @@
 
 - name: Add user to Docker group
   user:
-    name: "{{ username }}"
+    name: "{{ username | mandatory }}"
     groups: docker
     append: true
 

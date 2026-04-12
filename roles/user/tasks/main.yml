@@ -1,6 +1,6 @@
 - name: Create user
   user:
-    name: "{{ username }}"
+    name: "{{ username | mandatory }}"
     groups: sudo
     append: true
     shell: /bin/bash
